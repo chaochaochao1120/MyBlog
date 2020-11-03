@@ -10,8 +10,8 @@
             </div>
             <!--登录注册-->
             <div class="login-reg">
-                <el-button type="primary" size="small">登录</el-button>
-                <el-button type="success" size="small">注册</el-button>
+                <el-button type="primary" size="small" @click="handleLogin">登录</el-button>
+                <el-button type="success" size="small" @click="handleReg">注册</el-button>
             </div>
             <!--导航栏-->
             <div class="nav">
@@ -24,18 +24,46 @@
                     <li><router-link to="/about">关于</router-link></li>
                 </ul>
             </div>
-
         </div>
     </div>
 </template>
 
 <script>
+    import register from "../Blog/register/register";
+    import login from "../Blog/login/login";
+
     export default {
         name: "Nav",
         data(){
             return {
                 // 路由列表
-                routerList: ["Home", "Blog", "Message", "Diary", "Link", "About"]
+                routerList: ["Home", "Blog", "Message", "Diary", "Link", "About"],
+
+                alertKey: 0, // 弹窗的key值
+            }
+        },
+        methods: {
+            // 登录窗口
+            handleLogin(){
+                const h = this.$createElement;
+                this.$msgbox({
+                    title: '登录',
+                    message: h(login, {key: this.alertKey++}),
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    closeOnClickModal: false,
+                }).then(() => {}).catch(()=>{});
+            },
+            // 注册窗口
+            handleReg(){
+                const h = this.$createElement;
+                this.$msgbox({
+                    title: '注册',
+                    message: h(register),
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    closeOnClickModal: false,
+                }).then(() => {}).catch(()=>{});
             }
         },
         computed: {
@@ -43,12 +71,16 @@
                 let index = this.routerList.indexOf(this.$route.name);
                 return index + 1;
             }
+        },
+        components: {
+            login,
+            register,
         }
     }
 </script>
 
 <style scoped lang="less">
-    @import "../assets/css/font.css";
+    @import "../../assets/css/font.css";
     #nav{
         width: 100%;
         height: 60px;

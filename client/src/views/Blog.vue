@@ -15,7 +15,7 @@
 </template>
 
 <script>
-    import Nav from "../components/Nav";
+    import Nav from "../components/Nav/Nav";
     import sidebar from "../components/Blog/sidebar/sidebar";
     import articleShow from "../components/Blog/articleShow/articleShow";
 
