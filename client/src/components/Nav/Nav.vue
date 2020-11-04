@@ -29,8 +29,8 @@
 </template>
 
 <script>
-    import register from "../Blog/register/register";
-    import login from "../Blog/login/login";
+    import register from "../register/register";
+    import login from "../login/login";
 
     export default {
         name: "Nav",
