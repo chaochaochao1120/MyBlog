@@ -24,7 +24,7 @@
             <!-- 标签and继续阅读 -->
             <div class="footer">
                 <div class="tag">
-                    <img src="../../../../src/assets/img/tags.png" alt="">
+                    <img src="../../assets/img/tags.png" alt="">
                     <span class="tag-info">{{item.tag}}</span>
                 </div>
                 <div class="re">
@@ -288,7 +288,7 @@
         .loading{
             width: 380px;
             height: 30px;
-            background-image: url("../../../../../client/src/assets/img/loading.gif");
+            background-image: url("../../assets/img/loading.gif");
             background-position: 50%;
             background-size: 50%;
             background-repeat: no-repeat;

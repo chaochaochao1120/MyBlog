@@ -10,10 +10,10 @@
             <el-form-item label="确认密码" prop="checkPassword">
                 <el-input v-model="form.checkPassword" show-password></el-input>
             </el-form-item>
-            <el-form-item label="验证码">
+            <el-form-item label="验证码" prop="checkCode">
                 <el-input v-model="form.checkCode" class="checkCode"></el-input>
-                <div class="svg">svg</div>
-                <p class="refresh">看不清，换一张？</p>
+                <div class="svg" v-html="svgCode"></div>
+                <p class="refresh" @click="getCheckCode">看不清，换一张？</p>
             </el-form-item>
             <el-form-item class="btn">
                 <el-button type="success" @click="">立即注册</el-button>
@@ -62,7 +62,7 @@
                             }else{
                                 cb(new Error("请输入密码"));
                             }
-                            // 出发确认密码的验证
+                            // 触发确认密码的验证
                             if(this.form.checkPassword){
                                 this.$refs.form.validateField('checkPassword');
                             }
@@ -89,8 +89,46 @@
                             trigger: ['blur', 'change']
                         }
                     ],
-                }
+                    // 验证码匹配规则
+                    checkCode: [{
+                        validator: (rule, value, cb) => {
+                            if(!value){
+                                cb(new Error("请输入验证码"));
+                            }else{
+                                this.Api.judgeCheckCode(value).then(res => {
+                                    if(res.data.code === 0){
+                                        cb();
+                                    }else{
+                                        cb(new Error("验证码错误"));
+                                    }
+                                }).catch(err => {
+                                    cb(new Error("未知错误"));
+                                })
+                            }
+                        },
+                        type: "string",
+                        required: true,
+                        trigger: 'blur',
+                    }]
+                },
+                svgCode: "",    // 验证码svg
             }
+        },
+
+        methods: {
+            // 获取验证码
+            getCheckCode(){
+                this.Api.getCheckCode().then(res => {
+                    this.svgCode = res.data.data;
+                }).catch(err => {
+                    console.log(err);
+                })
+            },
+        },
+
+        mounted() {
+            // 注册组件加载后，获取验证码
+            this.getCheckCode();
         }
     }
 </script>
@@ -119,6 +157,11 @@
                 float: left;
                 width: 30%;
                 height: 40px;
+
+                /deep/svg{
+                    width: 100%;
+                    height: 40px;
+                }
             }
 
             .refresh{

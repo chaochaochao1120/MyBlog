@@ -16,8 +16,8 @@
 
 <script>
     import Nav from "../components/Nav/Nav";
-    import sidebar from "../components/Blog/sidebar/sidebar";
-    import articleShow from "../components/Blog/articleShow/articleShow";
+    import sidebar from "../components/Blog/sidebar";
+    import articleShow from "../components/Blog/articleShow";
 
     export default {
         name: "Blog",

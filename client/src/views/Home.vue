@@ -1,19 +1,19 @@
 <template>
     <div id="home">
-        <Nav></Nav>
+        <backgRoundImg></backgRoundImg>
     </div>
 </template>
 
 <script>
-    import Nav from "../components/Nav/Nav";
+    import backgRoundImg from "../components/home/backgRoundImg";
     export default {
         name: "Home",
         components: {
-            Nav
+            backgRoundImg
         }
     }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 
 </style>

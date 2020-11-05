@@ -62,7 +62,7 @@ router.post("/getArticleShow", (req, res) => {
         })
 })
 
-// 跟路由
+// 根路由
 router.get('/', function (req, res, next) {
     res.send("1111");
 });

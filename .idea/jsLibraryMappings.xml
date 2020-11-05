@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JavaScriptLibraryMappings">
+    <file url="file://$PROJECT_DIR$/client" libraries="{MyBlog/client/node_modules}" />
+    <file url="file://$PROJECT_DIR$/serve" libraries="{MyBlog/serve/node_modules}" />
+    <file url="PROJECT" libraries="{@types/express, @types/jquery, @types/mongodb, @types/node, MyBlog/client/node_modules, MyBlog/serve/node_modules, vue}" />
+    <includedPredefinedLibrary name="HTTP Response Handler" />
+  </component>
+</project>

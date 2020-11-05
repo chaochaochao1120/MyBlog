@@ -6,12 +6,12 @@ axios.defaults.withCredentials = true; //跨域允许携带cookie
 axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded"; //设置POST请求格式
 
 export default {
-    // 文章分类
+    // 获取文章分类
     articleInfo(){
         return axios.post("/blog/articleInfo");
     },
 
-    // 热门文章接口
+    // 获取热门文章接口
     articleHot(){
         return axios.post("/blog/articleHot");
     },
@@ -30,5 +30,15 @@ export default {
             skip += limit;
             return axios.post("/blog/getArticleShow", data)
         }
-    })()
+    })(),
+
+    // 获取验证码
+    getCheckCode(){
+        return axios.post("/register/getCheckCode");
+    },
+
+    // 判断验证码是否正确
+    judgeCheckCode(checkCode){
+        return axios.post("/register/judgeCheckCode", {checkCode});
+    }
 };
