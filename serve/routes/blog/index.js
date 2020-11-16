@@ -26,7 +26,8 @@ router.post("/articleInfo", (req, res) => {
 
 // 热门文章接口
 router.post("/articleHot", (req, res) => {
-    article.find({}, {__v: 0}, {sort: {pv: -1}, skip: 0, limit: 8})  // 访问数据库（find方法）
+    let {num} = req.body;
+    article.find({}, {__v: 0}, {sort: {pv: -1}, skip: 0, limit: num})  // 访问数据库（find方法）
         .then(data => {
             res.send({
                 code: 0,

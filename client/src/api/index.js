@@ -12,8 +12,8 @@ export default {
     },
 
     // 获取热门文章接口
-    articleHot(){
-        return axios.post("/blog/articleHot");
+    articleHot(num = 8){
+        return axios.post("/blog/articleHot", {num});
     },
 
     // 获取文章(每次请求五篇文章)
