@@ -13,6 +13,15 @@
                         <div class="once" v-for="item in article">
                             <div class="pic">
                                 <div class="img" :style="{backgroundImage:'url(http://localhost:3000'+item.surface+')'}"></div>
+                                <router-link to="/" class="link">
+                                    <i class="el-icon-link"></i>
+                                </router-link>
+                            </div>
+                            <div class="detailed">
+                                <h4><router-link to="/">{{item.title}}</router-link></h4>
+                                <div class="date">{{`${item.date.split("T")[0].split("-")[0]}年${item.date.split("T")[0].split("-")[1]}月${item.date.split("T")[0].split("-")[2]}日`}}</div>
+                                <p>{{item.content}}</p>
+                                <router-link class="read-more" to="/">阅读更多</router-link>
                             </div>
                         </div>
                     </div>
@@ -37,6 +46,7 @@
         mounted() {
             // 获取3篇热门文章
             this.Api.articleHot(3).then(res => {
+                console.log("热门文章", res.data.data);
                 this.article = res.data.data
             }).catch(err => {
                 console.log(err);
@@ -112,20 +122,99 @@
                     .once{
                         width: 370px;
                         height: 100%;
-                        background-color: pink;
                         box-sizing: border-box;
                         padding-top: 50px;
 
                         .pic{
+                            position: relative;
                             width: 100%;
                             height: 244px;
                             background-color: cadetblue;
+                            overflow: hidden;
+
+                            &::before{
+                                content: "";
+                                width: 100%;
+                                height: 244px;
+                                position: absolute;
+                                background: rgba(255,255,255,.51);
+                                top: -244px;
+                                left: 0;
+                                transition: top .4s;
+                            }
+
+                            &:hover{
+                                &::before{
+                                    top: 0;
+                                }
+
+                                .link{
+                                    top: 100px;
+                                }
+                            }
 
                             .img{
                                 width: 100%;
                                 height: 100%;
                                 background-repeat: no-repeat;
                                 background-size: 100% 100%;
+                            }
+
+                            .link{
+                                width: 40px;
+                                height: 40px;
+                                background: #333;
+                                position: absolute;
+                                top: -40px;
+                                left: 165px;
+                                color: #fff;
+                                font-size: 20px;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                transition: top .4s;
+                            }
+                        }
+
+                        .detailed{
+                            width: 100%;
+                            height: 209px;
+                            box-sizing: border-box;
+                            padding: 30px 15px;
+                            background-color: #faf9f9;
+                            font-size: 14px;
+
+                            h4{
+
+                                margin: 0 0 10px 0;
+                                text-overflow: ellipsis;
+                                overflow: hidden;
+                                white-space: nowrap;
+                            }
+
+                            div{
+                                color: #bbb;
+                                font-size: 12px;
+                                margin-bottom: 15px;
+                            }
+
+                            p{
+                                color: #999;
+                                height: 55px;
+                                display: -webkit-box;
+                                -webkit-box-orient: vertical;
+                                -webkit-line-clamp: 3;
+                                overflow: hidden;
+                                margin-bottom: 15px;
+                            }
+
+                            .read-more{
+                                color: #29b6f6;
+                                transition: color .3s;
+
+                                &:hover{
+                                    color: black;
+                                }
                             }
                         }
                     }
