@@ -16,7 +16,7 @@
                 <p class="refresh" @click="getCheckCode">看不清，换一张？</p>
             </el-form-item>
             <el-form-item class="btn">
-                <el-button type="success" @click="">立即注册</el-button>
+                <el-button type="success" @click="register('form')">立即注册</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -25,7 +25,7 @@
 <script>
     export default {
         name: "register",
-        data(){
+        data() {
             return {
                 // 注册表单数据
                 form: {
@@ -45,32 +45,34 @@
                         },
                         {
                             type: "string",
-                            pattern:  /^[\w\u4e00-\u9fa5\uac00-\ud7ff\u0800-\u4e00\-]{5,10}$/,
+                            pattern: /^[\w\u4e00-\u9fa5\uac00-\ud7ff\u0800-\u4e00\-]{5,10}$/,
                             message: "5-10位，数字 字母 下划线 中日韩文组成",
                             trigger: ['blur', 'change']
                         }
                     ],
                     // 密码匹配规则
-                    password: [{
-                        validator: (rule, value, cb) => {
-                            if(value){
-                                if(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,10}$/.test(value)){
-                                    cb();
-                                }else{
-                                    cb(new Error("5-10位字母和数字组成"));
+                    password: [
+                        {
+                            validator: (rule, value, cb) => {
+                                if (value) {
+                                    if (/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,10}$/.test(value)) {
+                                        cb();
+                                    } else {
+                                        cb(new Error("5-10位字母和数字组成"));
+                                    }
+                                } else {
+                                    cb(new Error("请输入密码"));
                                 }
-                            }else{
-                                cb(new Error("请输入密码"));
-                            }
-                            // 触发确认密码的验证
-                            if(this.form.checkPassword){
-                                this.$refs.form.validateField('checkPassword');
-                            }
+                                // 触发确认密码的验证
+                                if (this.form.checkPassword) {
+                                    this.$refs.form.validateField('checkPassword');
+                                }
+                            },
+                            type: "string",
+                            required: true,
+                            trigger: ['blur', 'change'],
                         },
-                        type: "string",
-                        required: true,
-                        trigger: ['blur', 'change'],
-                    }],
+                    ],
                     // 确认密码匹配规则
                     checkPassword: [
                         {
@@ -82,7 +84,7 @@
                             validator: (rule, value, cb) => {
                                 if (value === this.form.password) {
                                     cb();
-                                }else{
+                                } else {
                                     cb(new Error("两次密码不一致"));
                                 }
                             },
@@ -90,26 +92,31 @@
                         }
                     ],
                     // 验证码匹配规则
-                    checkCode: [{
-                        validator: (rule, value, cb) => {
-                            if(!value){
-                                cb(new Error("请输入验证码"));
-                            }else{
-                                this.Api.judgeCheckCode(value).then(res => {
-                                    if(res.data.code === 0){
-                                        cb();
-                                    }else{
-                                        cb(new Error("验证码错误"));
-                                    }
-                                }).catch(err => {
-                                    cb(new Error("未知错误"));
-                                })
-                            }
+                    checkCode: [
+                        {
+                            validator: (rule, value, cb) => {
+                                if (!value) {
+                                    cb(new Error("请输入验证码"));
+                                } else {
+                                    this.Api.judgeCheckCode(value).then(res => {
+                                        if (res.data.code === 0) {
+                                            cb();
+                                        } else {
+                                            cb(new Error("验证码错误"));
+                                        }
+                                    }).catch(err => {
+                                        cb(new Error("未知错误"));
+                                    })
+                                }
+                            },
+
                         },
-                        type: "string",
-                        required: true,
-                        trigger: 'blur',
-                    }]
+                        {
+                            type: "string",
+                            required: true,
+                            trigger: 'blur',
+                        }
+                    ]
                 },
                 svgCode: "",    // 验证码svg
             }
@@ -117,13 +124,21 @@
 
         methods: {
             // 获取验证码
-            getCheckCode(){
+            getCheckCode() {
                 this.Api.getCheckCode().then(res => {
                     this.svgCode = res.data.data;
-                }).catch(err => {
-                    console.log(err);
                 })
             },
+            // 立即注册
+            register(form) {
+                this.$refs[form].validate((valid) => {
+                    if (valid) {
+                        console.log(this.form);
+                    } else {
+                        return false;
+                    }
+                });
+            }
         },
 
         mounted() {
@@ -134,37 +149,37 @@
 </script>
 
 <style scoped lang="less">
-    .register{
-        user-select:none;
+    .register {
+        user-select: none;
 
-        .form{
+        .form {
             padding-right: 30px;
 
-            .btn{
+            .btn {
                 margin-bottom: 0;
 
-                /deep/.el-form-item__content{
+                /deep/ .el-form-item__content {
                     margin-left: 150px !important;
                 }
             }
 
-            .checkCode{
+            .checkCode {
                 float: left;
                 width: 33%;
             }
 
-            .svg{
+            .svg {
                 float: left;
                 width: 30%;
                 height: 40px;
 
-                /deep/svg{
+                /deep/ svg {
                     width: 100%;
                     height: 40px;
                 }
             }
 
-            .refresh{
+            .refresh {
                 float: left;
                 width: 37%;
                 height: 40px;
@@ -172,8 +187,8 @@
                 line-height: 50px;
                 color: #2ea7e0;
 
-                &:hover{
-                    cursor:pointer;
+                &:hover {
+                    cursor: pointer;
                     text-decoration: underline;
                 }
             }
