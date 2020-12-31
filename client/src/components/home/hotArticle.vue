@@ -46,7 +46,7 @@
         mounted() {
             // 获取3篇热门文章
             this.Api.articleHot(3).then(res => {
-                console.log("热门文章", res.data.data);
+                // console.log("热门文章", res.data.data);
                 this.article = res.data.data
             }).catch(err => {
                 console.log(err);
