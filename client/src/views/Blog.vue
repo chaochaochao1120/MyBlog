@@ -4,7 +4,9 @@
         <div class="content">
             <el-container style="height: 100%;">
                 <!-- 主要内容-->
-                <el-main style="width: calc(100% - 320px)"><articleShow></articleShow></el-main>
+                <el-main style="width: calc(100% - 320px)">
+                    <articleShow></articleShow>
+                </el-main>
                 <!--侧边栏-->
                 <el-aside width="300px">
                     <sidebar></sidebar>

@@ -6,6 +6,7 @@ axios.defaults.withCredentials = true; //跨域允许携带cookie
 axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded"; //设置POST请求格式
 
 export default {
+    // ********************************************博客页面********************************************
     // 获取文章分类
     articleInfo(){
         return axios.post("/blog/articleInfo");
@@ -37,8 +38,14 @@ export default {
         return axios.post("/register/getCheckCode");
     },
 
+    // ********************************************注册********************************************
     // 判断验证码是否正确
     judgeCheckCode(checkCode){
         return axios.post("/register/judgeCheckCode", {checkCode});
-    }
+    },
+
+    // 注册提交
+    submitRegister(data){
+        return axios.post("register", data);
+    },
 };

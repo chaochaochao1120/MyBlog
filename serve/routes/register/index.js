@@ -24,9 +24,55 @@ router.post("/judgeCheckCode", (req, res) => {
     }else{
         res.send({
             code: 1,
-            data: "验证失败"
+            data: "验证码错误"
         })
     }
+});
+
+// 注册接口
+router.post("/", (req, res) => {
+    let {userName, password, checkPassword, checkCode} = req.body;
+
+    // 判断这四个字段传过来是否为空
+    if(!userName || !password || !checkPassword || !checkCode){
+        res.send({
+            code: 1,
+            data: "数据无效，请检查后再注册",
+        })
+        return;
+    }
+
+    // 验证码两次密码是否一致
+    if(password !== checkPassword){
+        res.send({
+            code: 2,
+            data: "两次密码不一致",
+        })
+        return;
+    }
+
+    // 后端再次验证验证码
+    if(!checkCode || checkCode.toLocaleLowerCase() !== req.session.registerCheckCode.toLocaleLowerCase()){
+        res.send({
+            code: 3,
+            data: "验证码错误"
+        })
+        return;
+    }
+
+    // 验证用户名和密码是否符合格式要求
+    if(!/^[\w\u4e00-\u9fa5\uac00-\ud7ff\u0800-\u4e00\-]{5,10}$/.test(userName) || !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,10}$/.test(password)){
+        res.send({
+            code: 2,
+            data: "用户名和密码不符合格式要求"
+        })
+        return;
+    }
+
+    // 判断用户名是否重复
+    // if(){
+    //
+    // }
 })
 
 module.exports = router;

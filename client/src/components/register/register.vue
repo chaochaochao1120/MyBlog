@@ -121,7 +121,6 @@
                 svgCode: "",    // 验证码svg
             }
         },
-
         methods: {
             // 获取验证码
             getCheckCode() {
@@ -133,14 +132,20 @@
             register(form) {
                 this.$refs[form].validate((valid) => {
                     if (valid) {
-                        console.log(this.form);
+                        this.Api.submitRegister(this.form).then(res => {
+                            // console.log("注册", res.data);
+                            if(res.data.code === 0){
+                                console.log("注册成功");
+                            }else{
+                                this.$message.error(res.data.data);
+                            }
+                        })
                     } else {
                         return false;
                     }
                 });
             }
         },
-
         mounted() {
             // 注册组件加载后，获取验证码
             this.getCheckCode();
