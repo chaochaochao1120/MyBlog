@@ -1,7 +1,7 @@
 <template>
     <div class="timeline">
         <el-timeline>
-            <el-timeline-item v-for="item in diaryList" :timestamp="item.date" placement="top">
+            <el-timeline-item v-for="(item,index) in diaryList" :key="index" :timestamp="item.date" placement="top">
                 <el-card>
                     <p>{{item.content}}</p>
                 </el-card>
