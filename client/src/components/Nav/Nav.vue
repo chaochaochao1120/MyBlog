@@ -20,7 +20,7 @@
                     <li><router-link to="/blog/0">博客</router-link></li>
                     <li><router-link to="/message">留言</router-link></li>
                     <li><router-link to="/diary">日记</router-link></li>
-                    <li><router-link to="/link">友链</router-link></li>
+                    <!--<li><router-link to="/link">友链</router-link></li>-->
                     <li><router-link to="/about">关于</router-link></li>
                 </ul>
             </div>
@@ -37,7 +37,7 @@
         data(){
             return {
                 // 路由列表
-                routerList: ["Home", "Blog", "Message", "Diary", "Link", "About"],
+                routerList: ["Home", "Blog", "Message", "Diary", "About"],
 
                 alertKey: 0, // 弹窗的key值
             }

@@ -38,11 +38,11 @@ const router = new VueRouter({
             component: () => import("../views/About")
         },
         // -------------------------------友链页----------------------------------------
-        {
+        /*{
             path: "/link",
             name: "Link",
             component: () => import("../views/Link")
-        },
+        },*/
     ]
 })
 

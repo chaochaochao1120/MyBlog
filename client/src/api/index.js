@@ -44,6 +44,11 @@ export default {
         return axios.post("/register/judgeCheckCode", {checkCode});
     },
 
+    // 判断用户名是否存在
+    judgeUserName(userName){
+        return axios.post("/register/judgeUserName", {userName});
+    },
+
     // 注册提交
     submitRegister(data){
         return axios.post("register", data);

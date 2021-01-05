@@ -39,16 +39,29 @@
                     // 用户名匹配规则
                     userName: [
                         {
-                            required: true,
-                            message: '请输入用户名',
-                            trigger: 'blur'
+                            validator: (rule, value, cb) => {
+                                if(!value){
+                                    cb(new Error("请输入用户名"));
+                                }else{
+                                    if(!/^[\w\u4e00-\u9fa5\uac00-\ud7ff\u0800-\u4e00\-]{5,10}$/.test(value)){
+                                        cb(new Error("5-10位，数字 字母 下划线 中日韩文组成"));
+                                    }else{
+                                        this.Api.judgeUserName(value).then(res => {
+                                            if(res.data.code === 0){
+                                                cb();
+                                            }else{
+                                                cb(new Error("用户名已存在"));
+                                            }
+                                        })
+                                    }
+                                }
+                            }
                         },
                         {
                             type: "string",
-                            pattern: /^[\w\u4e00-\u9fa5\uac00-\ud7ff\u0800-\u4e00\-]{5,10}$/,
-                            message: "5-10位，数字 字母 下划线 中日韩文组成",
+                            required: true,
                             trigger: ['blur', 'change']
-                        }
+                        },
                     ],
                     // 密码匹配规则
                     password: [
@@ -133,9 +146,9 @@
                 this.$refs[form].validate((valid) => {
                     if (valid) {
                         this.Api.submitRegister(this.form).then(res => {
-                            // console.log("注册", res.data);
+                            console.log("注册", res.data);
                             if(res.data.code === 0){
-                                console.log("注册成功");
+                                // console.log("注册成功");
                             }else{
                                 this.$message.error(res.data.data);
                             }

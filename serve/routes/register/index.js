@@ -1,6 +1,8 @@
 var express = require("express");
 var router = express.Router();
-var svgCaptcha = require("svg-captcha")
+var svgCaptcha = require("svg-captcha");
+var user = require("../../db/user");
+
 // 获取验证码接口
 router.post("/getCheckCode", (req, res) => {
     let captcha = svgCaptcha.create();
@@ -29,8 +31,34 @@ router.post("/judgeCheckCode", (req, res) => {
     }
 });
 
+// 判断用户名是否重复
+router.post("/judgeUserName", (req, res) => {
+    let {userName} = req.body;
+    user.findOne({
+        userName: userName
+    }).then(data => {
+        if(data){
+            res.send({
+                code: 3,
+                data: "用户名已存在",
+            })
+        }else{
+            res.send({
+                code: 0,
+                data: "用户名可用"
+            })
+        }
+    }).catch(err => {
+        res.send({
+            code: 4,
+            data: "服务器错误"
+        })
+    })
+})
+
 // 注册接口
 router.post("/", (req, res) => {
+    console.log(req.body);
     let {userName, password, checkPassword, checkCode} = req.body;
 
     // 判断这四个字段传过来是否为空
@@ -70,9 +98,33 @@ router.post("/", (req, res) => {
     }
 
     // 判断用户名是否重复
-    // if(){
-    //
-    // }
+    user.findOne({
+        userName: userName
+    }).then(data => {
+        if(data){
+            res.send({
+                code: 3,
+                data: "用户名已存在",
+            })
+        }else{
+            user.create({userName, password}).then(data => {
+                res.send({
+                    code: 0,
+                    data: "注册成功"
+                })
+            }).catch(err => {
+                res.send({
+                    code: 4,
+                    data: "服务器错误"
+                })
+            })
+        }
+    }).catch(err => {
+        res.send({
+            code: 4,
+            data: "服务器错误"
+        })
+    })
 })
 
 module.exports = router;

@@ -10,7 +10,7 @@ let user = mongoose.model("user", new Schema({
     // 头像
     photo: {type: String, default: "/img/defaultPhoto.png"},
     // 注册时间
-    createDate: {type: Number, default: Date().now().getTime()},
+    createDate: {type: Number, default: Date.now()},
     // 是否权限禁用
     disabled: {type: Boolean, default: false}
 }));
