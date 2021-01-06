@@ -50,7 +50,6 @@
         data() {
             return{
                 articleList: [],    // 文章列表
-
                 ifLoading: false,   // 是否显示loading图
                 ifNoMore: false,    // 是否显示没有了
             }
@@ -113,6 +112,10 @@
 
             // 监听滚轮位置
             window.addEventListener("scroll", this.handleScroll);
+        },
+        // 销毁滚动事件
+        destroyed() {
+            window.removeEventListener('scroll', this.handleScroll)
         }
     }
 </script>

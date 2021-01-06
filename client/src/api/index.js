@@ -13,7 +13,7 @@ export default {
     },
 
     // 获取热门文章接口
-    articleHot(num = 8){
+    articleHot(num = 5){
         return axios.post("/blog/articleHot", {num});
     },
 

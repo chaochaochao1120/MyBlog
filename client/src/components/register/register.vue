@@ -1,22 +1,19 @@
 <template>
     <div class="register">
         <el-form :model="form" :rules="rules" ref="form" label-width="100px" class="form">
-            <el-form-item label="用户名" prop="userName">
-                <el-input v-model="form.userName"></el-input>
+            <el-form-item label="用户名" prop="userName" label-width="80px">
+                <el-input v-model="form.userName" class="input"></el-input>
             </el-form-item>
-            <el-form-item label="密码" prop="password">
-                <el-input v-model="form.password" show-password></el-input>
+            <el-form-item label="密码" prop="password" label-width="80px">
+                <el-input v-model="form.password" show-password class="input"></el-input>
             </el-form-item>
-            <el-form-item label="确认密码" prop="checkPassword">
-                <el-input v-model="form.checkPassword" show-password></el-input>
+            <el-form-item label="确认密码" prop="checkPassword" label-width="80px">
+                <el-input v-model="form.checkPassword" show-password class="input"></el-input>
             </el-form-item>
-            <el-form-item label="验证码" prop="checkCode">
+            <el-form-item label="验证码" prop="checkCode" label-width="80px">
                 <el-input v-model="form.checkCode" class="checkCode"></el-input>
                 <div class="svg" v-html="svgCode"></div>
                 <p class="refresh" @click="getCheckCode">看不清，换一张？</p>
-            </el-form-item>
-            <el-form-item class="btn">
-                <el-button type="success" @click="register('form')">立即注册</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -43,8 +40,8 @@
                                 if(!value){
                                     cb(new Error("请输入用户名"));
                                 }else{
-                                    if(!/^[\w\u4e00-\u9fa5\uac00-\ud7ff\u0800-\u4e00\-]{5,10}$/.test(value)){
-                                        cb(new Error("5-10位，数字 字母 下划线 中日韩文组成"));
+                                    if(!/^[\w\u4e00-\u9fa5\uac00-\ud7ff\u0800-\u4e00\-]{5,20}$/.test(value)){
+                                        cb(new Error("5-20位，数字 字母 下划线 中日韩文组成"));
                                     }else{
                                         this.Api.judgeUserName(value).then(res => {
                                             if(res.data.code === 0){
@@ -68,10 +65,10 @@
                         {
                             validator: (rule, value, cb) => {
                                 if (value) {
-                                    if (/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,10}$/.test(value)) {
+                                    if (/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,20}$/.test(value)) {
                                         cb();
                                     } else {
-                                        cb(new Error("5-10位字母和数字组成"));
+                                        cb(new Error("5-20位字母和数字组成"));
                                     }
                                 } else {
                                     cb(new Error("请输入密码"));
@@ -132,6 +129,7 @@
                     ]
                 },
                 svgCode: "",    // 验证码svg
+                disabled: false,        // 立即注册按钮
             }
         },
         methods: {
@@ -141,23 +139,6 @@
                     this.svgCode = res.data.data;
                 })
             },
-            // 立即注册
-            register(form) {
-                this.$refs[form].validate((valid) => {
-                    if (valid) {
-                        this.Api.submitRegister(this.form).then(res => {
-                            console.log("注册", res.data);
-                            if(res.data.code === 0){
-                                // console.log("注册成功");
-                            }else{
-                                this.$message.error(res.data.data);
-                            }
-                        })
-                    } else {
-                        return false;
-                    }
-                });
-            }
         },
         mounted() {
             // 注册组件加载后，获取验证码
@@ -171,7 +152,7 @@
         user-select: none;
 
         .form {
-            padding-right: 30px;
+            padding-right: 0px;
 
             .btn {
                 margin-bottom: 0;
@@ -179,6 +160,11 @@
                 /deep/ .el-form-item__content {
                     margin-left: 150px !important;
                 }
+            }
+
+            .input{
+                float: left;
+                width: 240px;
             }
 
             .checkCode {

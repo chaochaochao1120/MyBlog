@@ -58,7 +58,6 @@ router.post("/judgeUserName", (req, res) => {
 
 // 注册接口
 router.post("/", (req, res) => {
-    console.log(req.body);
     let {userName, password, checkPassword, checkCode} = req.body;
 
     // 判断这四个字段传过来是否为空
@@ -89,7 +88,7 @@ router.post("/", (req, res) => {
     }
 
     // 验证用户名和密码是否符合格式要求
-    if(!/^[\w\u4e00-\u9fa5\uac00-\ud7ff\u0800-\u4e00\-]{5,10}$/.test(userName) || !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,10}$/.test(password)){
+    if(!/^[\w\u4e00-\u9fa5\uac00-\ud7ff\u0800-\u4e00\-]{5,20}$/.test(userName) || !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,20}$/.test(password)){
         res.send({
             code: 2,
             data: "用户名和密码不符合格式要求"

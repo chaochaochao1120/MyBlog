@@ -16,12 +16,22 @@
             <!--导航栏-->
             <div class="nav">
                 <ul :class="'list' + whichActive">
-                    <li><router-link to="/">首页</router-link></li>
-                    <li><router-link to="/blog/0">博客</router-link></li>
-                    <li><router-link to="/message">留言</router-link></li>
-                    <li><router-link to="/diary">日记</router-link></li>
+                    <li>
+                        <router-link to="/">首页</router-link>
+                    </li>
+                    <li>
+                        <router-link to="/blog/0">博客</router-link>
+                    </li>
+                    <li>
+                        <router-link to="/message">留言</router-link>
+                    </li>
+                    <li>
+                        <router-link to="/diary">日记</router-link>
+                    </li>
                     <!--<li><router-link to="/link">友链</router-link></li>-->
-                    <li><router-link to="/about">关于</router-link></li>
+                    <li>
+                        <router-link to="/about">关于</router-link>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -34,7 +44,7 @@
 
     export default {
         name: "Nav",
-        data(){
+        data() {
             return {
                 // 路由列表
                 routerList: ["Home", "Blog", "Message", "Diary", "About"],
@@ -44,30 +54,71 @@
         },
         methods: {
             // 登录窗口
-            handleLogin(){
+            handleLogin() {
                 const h = this.$createElement;
                 this.$msgbox({
-                    title: '登录',
+                    title: '欢迎登录',
                     message: h(login, {key: this.alertKey++}),
+                    center: true,
                     showCancelButton: false,
-                    showConfirmButton: false,
+                    showConfirmButton: true,
                     closeOnClickModal: false,
-                }).then(() => {}).catch(()=>{});
+                    confirmButtonText: "立即登录",
+                }).then(() => {
+                }).catch(() => {
+                });
             },
             // 注册窗口
-            handleReg(){
+            handleReg() {
                 const h = this.$createElement;
                 this.$msgbox({
-                    title: '注册',
+                    title: '欢迎注册',
                     message: h(register),
+                    center: true,
                     showCancelButton: false,
-                    showConfirmButton: false,
+                    showConfirmButton: true,
                     closeOnClickModal: false,
-                }).then(() => {}).catch(()=>{});
+                    confirmButtonText: "立即注册",
+                    beforeClose: (action, instance, done) => {
+                        if (action === 'confirm') {
+                           ( function() {
+                               this.disabled = true;
+                               this.$refs["form"].validate((valid) => {
+                                   if (valid) {
+                                       this.Api.submitRegister(this.form).then(res => {
+                                           this.disabled = false;
+                                           // console.log("注册", res.data);
+                                           if(res.data.code === 0){
+                                               // console.log("注册成功");
+                                               this.$message({
+                                                   message: '注册成功',
+                                                   type: 'success'
+                                               });
+                                               done();
+                                               this.$refs["form"].resetFields();
+                                           }else{
+                                               this.$message.error(res.data.data);
+                                           }
+                                       }).catch(err => {
+                                           this.disabled = false;
+                                       })
+                                   } else {
+                                       this.disabled = false;
+                                       return false;
+                                   }
+                               });
+                            }).call(instance.$children[2]);
+                        } else {
+                            done();
+                        }
+                    }
+                }).then(() => {
+                }).catch(() => {
+                });
             }
         },
         computed: {
-            whichActive(){
+            whichActive() {
                 let index = this.routerList.indexOf(this.$route.name);
                 return index + 1;
             }
@@ -81,7 +132,8 @@
 
 <style scoped lang="less">
     @import "../../assets/css/font.css";
-    #nav{
+
+    #nav {
         width: 100%;
         height: 60px;
         background-color: #FFF;
@@ -89,7 +141,7 @@
         top: 0;
         z-index: 999;
 
-        .content{
+        .content {
             width: 100%;
             max-width: 1380px;
             height: 100%;
@@ -99,34 +151,34 @@
             box-sizing: border-box;
             position: relative;
 
-            .logo{
+            .logo {
                 float: left;
                 width: 90px;
                 height: 60px;
 
-                span{
+                span {
                     font-size: 45px;
                     font-family: BarbaraHand;
                 }
             }
 
-            .nav{
+            .nav {
                 float: right;
                 width: 576px;
                 height: 100%;
                 position: absolute;
                 right: 20%;
-                
-                ul{
+
+                ul {
                     display: flex;
 
-                    li{
+                    li {
                         flex: 1;
                         text-align: center;
                         position: relative;
                         margin: 0 5px;
 
-                        &::after{
+                        &::after {
                             content: "";
                             width: 0px;
                             height: 2px;
@@ -139,7 +191,7 @@
                             transition: width 0.5s;
                         }
 
-                        a{
+                        a {
                             display: block;
                             font-size: 15px;
                             width: 100%;
@@ -148,12 +200,14 @@
 
                     }
 
-                    li:hover{
+                    li:hover {
                         cursor: pointer;
-                        a{
+
+                        a {
                             color: #6bc30d;
                         }
-                        &::after{
+
+                        &::after {
                             width: 100%;
                         }
                     }
@@ -163,12 +217,12 @@
                     &.list3 li:nth-child(3),
                     &.list4 li:nth-child(4),
                     &.list5 li:nth-child(5),
-                    &.list6 li:nth-child(6){
-                        a{
+                    &.list6 li:nth-child(6) {
+                        a {
                             color: #6bc30d;
                         }
 
-                        &::after{
+                        &::after {
                             width: 100%;
                         }
                     }
@@ -176,7 +230,7 @@
                 }
             }
 
-            .login-reg{
+            .login-reg {
                 float: right;
             }
         }

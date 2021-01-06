@@ -135,7 +135,7 @@
             },
             // 获取热门文章
             getArticleHot() {
-                this.Api.articleHot()
+                this.Api.articleHot(8)
                     .then(res => {
                         // console.log(res);
                         this.articleHot = res.data.data;
