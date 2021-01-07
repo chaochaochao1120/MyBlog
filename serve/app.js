@@ -58,6 +58,10 @@ app.use(session({
 // 博客路由
 app.use('/blog', require('./routes/blog'));
 
+// 注册
 app.use('/register', require('./routes/register'));
+
+// 登录
+app.use('/login', require('./routes/login'));
 
 module.exports = app;

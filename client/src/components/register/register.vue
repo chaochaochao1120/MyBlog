@@ -140,7 +140,7 @@
                 })
             },
         },
-        mounted() {
+        created() {
             // 注册组件加载后，获取验证码
             this.getCheckCode();
         }

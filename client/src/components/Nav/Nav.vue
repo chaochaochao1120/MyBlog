@@ -64,6 +64,34 @@
                     showConfirmButton: true,
                     closeOnClickModal: false,
                     confirmButtonText: "立即登录",
+                    beforeClose: (action, instance, done) => {
+                        if (action === 'confirm') {
+                            ( function() {
+                                this.disabled = true;
+                                this.$refs["form"].validate((valid) => {
+                                    if (valid) {
+                                        this.Api.login(this.form).then(res => {
+                                            console.log("登录", res.data);
+                                            if(res.data.code === 0){
+                                                this.$message({
+                                                    message: '登录成功',
+                                                    type: 'success'
+                                                });
+                                                done();
+                                                this.$refs["form"].resetFields();
+                                            }else{
+                                                this.$message.error(res.data.data);
+                                            }
+                                        })
+                                    } else {
+                                        return false;
+                                    }
+                                });
+                            }).call(instance.$children[2]);
+                        } else {
+                            done();
+                        }
+                    }
                 }).then(() => {
                 }).catch(() => {
                 });
@@ -75,6 +103,7 @@
                     title: '欢迎注册',
                     message: h(register),
                     center: true,
+                    lockScroll: true,
                     showCancelButton: false,
                     showConfirmButton: true,
                     closeOnClickModal: false,
@@ -86,7 +115,7 @@
                                this.$refs["form"].validate((valid) => {
                                    if (valid) {
                                        this.Api.submitRegister(this.form).then(res => {
-                                           this.disabled = false;
+                                           this.getCheckCode();
                                            // console.log("注册", res.data);
                                            if(res.data.code === 0){
                                                // console.log("注册成功");
@@ -100,10 +129,9 @@
                                                this.$message.error(res.data.data);
                                            }
                                        }).catch(err => {
-                                           this.disabled = false;
+                                           this.getCheckCode();
                                        })
                                    } else {
-                                       this.disabled = false;
                                        return false;
                                    }
                                });

@@ -51,6 +51,12 @@ export default {
 
     // 注册提交
     submitRegister(data){
-        return axios.post("register", data);
+        return axios.post("/register", data);
+    },
+
+    // ********************************************登录********************************************
+    // 登录
+    login(data){
+        return axios.post("/login", data);
     },
 };

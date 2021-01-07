@@ -54,7 +54,7 @@ router.post("/judgeUserName", (req, res) => {
             data: "服务器错误"
         })
     })
-})
+});
 
 // 注册接口
 router.post("/", (req, res) => {
@@ -124,6 +124,7 @@ router.post("/", (req, res) => {
             data: "服务器错误"
         })
     })
-})
+    req.session.registerCheckCode = 0;
+});
 
 module.exports = router;
