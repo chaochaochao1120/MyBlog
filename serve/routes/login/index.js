@@ -4,6 +4,15 @@ var user = require("../../db/user");
 
 // 登录
 router.post("/", (req, res) => {
+    // 判断是否已经登录
+    if (req.session.login) {
+        res.send({
+            code: 2,
+            data: "已经登录，请退出后在登录"
+        })
+        return;
+    }
+
     let {userName, password} = req.body;
 
     // 判断这四个字段传过来是否为空
@@ -27,6 +36,10 @@ router.post("/", (req, res) => {
     user.findOne({userName}).then(data => {
         if(data){
             if(data.password === password){
+                // 写入session
+                req.session.login = data;
+
+                // 返回前端
                 res.send({
                     code: 0,
                     data: "登录成功"
@@ -44,6 +57,22 @@ router.post("/", (req, res) => {
             })
         }
     })
+});
+
+// 判断是否登录
+router.post("/ifLogin", (req, res) => {
+    // 判断是否已经登录
+    if (req.session.login) {
+        res.send({
+            code: 0,
+            data: req.session.login,
+        })
+    }else{
+        res.send({
+            code: 1,
+            data: "未登录",
+        })
+    }
 })
 
 module.exports = router;

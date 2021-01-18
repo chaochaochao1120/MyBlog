@@ -3,8 +3,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require("mongoose");
-var session = require("express-session");
-var connectMongo = require("connect-mongo")(session);
+
 
 // 链接数据库
 mongoose.connect("mongodb://localhost:27017/blog", {useNewUrlParser: true, useUnifiedTopology: true})
@@ -46,14 +45,7 @@ app.use((req, res, next) => {
 });
 
 // 设置session
-app.use(session({
-    secret: "lzc",                  // 秘钥，一个字符，用于加密，可以随便写
-    cookie: {maxAge: 30*60*1000},   // 给前端这只cookie保存时间
-    rolling: false,                 // 每次用户和后端交互时（访问链接，ajax），刷新cookie有效期
-    resave: false,                  // 是否每次存储session
-    saveUninitialized: false,       // 初始化
-    store: new connectMongo({url: "mongodb://localhost:27017/blog"}),  // 将session存到数据库中
-}));
+app.use(require("../serve/middleware/session"));
 
 // 博客路由
 app.use('/blog', require('./routes/blog'));

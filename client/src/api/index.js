@@ -59,4 +59,9 @@ export default {
     login(data){
         return axios.post("/login", data);
     },
+
+    // 判断是否登录
+    ifLogin(){
+        return axios.post("/login/ifLogin")
+    }
 };

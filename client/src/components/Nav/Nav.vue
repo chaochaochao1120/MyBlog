@@ -10,8 +10,22 @@
             </div>
             <!--登录注册-->
             <div class="login-reg">
-                <el-button type="primary" size="small" @click="handleLogin">登录</el-button>
-                <el-button type="success" size="small" @click="handleReg">注册</el-button>
+                <div v-if="LoginIn">
+                    <div class="block">
+                        <img class="user-photo" :src="loginInfo.photo" alt="">
+                    </div>
+                    <el-dropdown trigger="click">
+                        <span class="el-dropdown-link">{{loginInfo.userName}}</span>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item>黄金糕</el-dropdown-item>
+                            <el-dropdown-item>狮子头</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                </div>
+                <div v-if="loginOut">
+                    <el-button type="primary" size="small" @click="handleLogin">登录</el-button>
+                    <el-button type="success" size="small" @click="handleReg">注册</el-button>
+                </div>
             </div>
             <!--导航栏-->
             <div class="nav">
@@ -44,12 +58,21 @@
 
     export default {
         name: "Nav",
+        components: {
+            login,
+            register,
+        },
         data() {
             return {
                 // 路由列表
                 routerList: ["Home", "Blog", "Message", "Diary", "About"],
-
-                alertKey: 0, // 弹窗的key值
+                alertKey: 0,        // 弹窗的key值
+                LoginIn: false,     // 是否登录
+                loginOut: false,     // 是否登录
+                loginInfo: {
+                    userName: "",
+                    photo: "",
+                }
             }
         },
         methods: {
@@ -66,20 +89,20 @@
                     confirmButtonText: "立即登录",
                     beforeClose: (action, instance, done) => {
                         if (action === 'confirm') {
-                            ( function() {
+                            (function () {
                                 this.disabled = true;
                                 this.$refs["form"].validate((valid) => {
                                     if (valid) {
                                         this.Api.login(this.form).then(res => {
-                                            console.log("登录", res.data);
-                                            if(res.data.code === 0){
+                                            // console.log("登录", res.data);
+                                            if (res.data.code === 0) {
                                                 this.$message({
                                                     message: '登录成功',
                                                     type: 'success'
                                                 });
                                                 done();
                                                 this.$refs["form"].resetFields();
-                                            }else{
+                                            } else {
                                                 this.$message.error(res.data.data);
                                             }
                                         })
@@ -110,31 +133,31 @@
                     confirmButtonText: "立即注册",
                     beforeClose: (action, instance, done) => {
                         if (action === 'confirm') {
-                           ( function() {
-                               this.disabled = true;
-                               this.$refs["form"].validate((valid) => {
-                                   if (valid) {
-                                       this.Api.submitRegister(this.form).then(res => {
-                                           this.getCheckCode();
-                                           // console.log("注册", res.data);
-                                           if(res.data.code === 0){
-                                               // console.log("注册成功");
-                                               this.$message({
-                                                   message: '注册成功',
-                                                   type: 'success'
-                                               });
-                                               done();
-                                               this.$refs["form"].resetFields();
-                                           }else{
-                                               this.$message.error(res.data.data);
-                                           }
-                                       }).catch(err => {
-                                           this.getCheckCode();
-                                       })
-                                   } else {
-                                       return false;
-                                   }
-                               });
+                            (function () {
+                                this.disabled = true;
+                                this.$refs["form"].validate((valid) => {
+                                    if (valid) {
+                                        this.Api.submitRegister(this.form).then(res => {
+                                            this.getCheckCode();
+                                            // console.log("注册", res.data);
+                                            if (res.data.code === 0) {
+                                                // console.log("注册成功");
+                                                this.$message({
+                                                    message: '注册成功',
+                                                    type: 'success'
+                                                });
+                                                done();
+                                                this.$refs["form"].resetFields();
+                                            } else {
+                                                this.$message.error(res.data.data);
+                                            }
+                                        }).catch(err => {
+                                            this.getCheckCode();
+                                        })
+                                    } else {
+                                        return false;
+                                    }
+                                });
                             }).call(instance.$children[2]);
                         } else {
                             done();
@@ -151,9 +174,19 @@
                 return index + 1;
             }
         },
-        components: {
-            login,
-            register,
+        created() {
+            this.Api.ifLogin().then(res => {
+                // console.log("判断是否登录", res.data);
+                if (res.data.code === 0) {
+                    this.LoginIn = true;
+                    this.loginOut = false;
+                    this.loginInfo.userName = res.data.data.userName;
+                    this.loginInfo.photo = "http://localhost:3000" + res.data.data.photo
+                } else {
+                    this.LoginIn = false;
+                    this.loginOut = true;
+                }
+            })
         }
     }
 </script>
@@ -208,7 +241,7 @@
 
                         &::after {
                             content: "";
-                            width: 0px;
+                            width: 0;
                             height: 2px;
                             background-color: #6bc30d;
                             position: absolute;
@@ -260,6 +293,39 @@
 
             .login-reg {
                 float: right;
+                margin-right: 10px;
+
+                div:nth-child(1) {
+                    height: 60px;
+                    line-height: 60px;
+                    display: flex;
+                    justify-items: center;
+                    align-items: center;
+
+                    .block {
+                        width: 46px;
+                        height: 45px;
+                        background-color: pink;
+                        border-radius: 50%;
+                        margin-right: 10px;
+                        overflow: hidden;
+                        padding-left: 3px;
+                        box-sizing: border-box;
+
+                        .user-photo {
+                            width: 40px;
+                            height: 40px;
+                        }
+                    }
+                }
+
+                .user-name {
+                    font-size: 14px;
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
             }
         }
     }
