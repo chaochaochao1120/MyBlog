@@ -11,14 +11,13 @@
             <!--登录注册-->
             <div class="login-reg">
                 <div v-if="LoginIn">
-                    <div class="block">
-                        <img class="user-photo" :src="loginInfo.photo" alt="">
-                    </div>
-                    <el-dropdown trigger="click">
-                        <span class="el-dropdown-link">{{loginInfo.userName}}</span>
+                    <el-dropdown trigger="click" placement="bottom" @command="handleCommand">
+                        <div class="block">
+                            <img class="user-photo" :src="loginInfo.photo" alt="">
+                        </div>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item>黄金糕</el-dropdown-item>
-                            <el-dropdown-item>狮子头</el-dropdown-item>
+                            <el-dropdown-item command="userInfo">个人信息</el-dropdown-item>
+                            <el-dropdown-item command="quit" class="quit">退出</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </div>
@@ -102,6 +101,9 @@
                                                 });
                                                 done();
                                                 this.$refs["form"].resetFields();
+                                                setTimeout(() => {
+                                                    window.location.reload();
+                                                }, 0)
                                             } else {
                                                 this.$message.error(res.data.data);
                                             }
@@ -133,6 +135,7 @@
                     confirmButtonText: "立即注册",
                     beforeClose: (action, instance, done) => {
                         if (action === 'confirm') {
+                            let that = this;
                             (function () {
                                 this.disabled = true;
                                 this.$refs["form"].validate((valid) => {
@@ -148,6 +151,9 @@
                                                 });
                                                 done();
                                                 this.$refs["form"].resetFields();
+                                                setTimeout(() => {
+                                                    that.handleLogin();
+                                                }, 0)
                                             } else {
                                                 this.$message.error(res.data.data);
                                             }
@@ -166,6 +172,14 @@
                 }).then(() => {
                 }).catch(() => {
                 });
+            },
+            // 点击下拉菜单
+            handleCommand(command){
+                if(command === "userInfo"){
+                    console.log(11111);
+                }else{
+                    console.log(22222);
+                }
             }
         },
         computed: {
@@ -228,7 +242,7 @@
                 width: 576px;
                 height: 100%;
                 position: absolute;
-                right: 20%;
+                right: 24%;
 
                 ul {
                     display: flex;
@@ -293,7 +307,6 @@
 
             .login-reg {
                 float: right;
-                margin-right: 10px;
 
                 div:nth-child(1) {
                     height: 60px;
@@ -303,8 +316,8 @@
                     align-items: center;
 
                     .block {
-                        width: 46px;
-                        height: 45px;
+                        width: 41px;
+                        height: 40px;
                         background-color: pink;
                         border-radius: 50%;
                         margin-right: 10px;
@@ -312,21 +325,24 @@
                         padding-left: 3px;
                         box-sizing: border-box;
 
+                        &:hover{
+                            cursor: pointer;
+                        }
+
                         .user-photo {
-                            width: 40px;
-                            height: 40px;
+                            width: 35px;
+                            height: 35px;
                         }
                     }
                 }
-
-                .user-name {
-                    font-size: 14px;
-
-                    &:hover {
-                        cursor: pointer;
-                    }
-                }
             }
+        }
+    }
+
+    .el-dropdown-menu{
+
+        .quit:hover{
+            color: red;
         }
     }
 </style>

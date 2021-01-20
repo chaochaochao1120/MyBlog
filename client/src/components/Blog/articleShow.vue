@@ -132,12 +132,12 @@
             padding: 20px 25px;
             box-sizing: border-box;
             position: relative;
-            animation: show 0.9s 1;
+            animation: show 0.5s 1;
             animation-fill-mode: forwards;
 
             @keyframes show{
-                from{opacity: 0.5; transform: scale(0.5)}
-                to{opacity: 1; transform: scale(1)}
+                from{opacity: 0;}
+                to{opacity: 1;}
             }
 
             &:nth-child(1)::before{
