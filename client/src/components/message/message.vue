@@ -17,18 +17,32 @@
         },
         methods: {
             handleSub(data){
-                console.log(data);
                 // 判断是否登录
                 this.Api.ifLogin().then(res => {
                     // console.log("判断是否登录", res.data);
                     if (res.data.code === 0) {
-                        this.LoginIn = true;
-                        this.loginOut = false;
-                        this.loginInfo.userName = res.data.data.userName;
-                        this.loginInfo.photo = "http://localhost:3000" + res.data.data.photo
+                        if(data){
+                            console.log(data);
+                            layer.msg('留言成功', {
+                                icon: 6,
+                                offset: '300px',
+                                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                            });
+                        }else{
+                            layer.msg('请输入内容！', {
+                                icon: 5,
+                                offset: '300px',
+                                time: 2000, //2秒关闭（如果不配置，默认是3秒）
+                                anim: 6, // 抖动
+                            });
+                        }
                     } else {
-                        this.LoginIn = false;
-                        this.loginOut = true;
+                        layer.msg('请先登录！', {
+                            icon: 5,
+                            offset: '300px',    // top: 300px
+                            time: 2000,     // 2秒关闭（如果不配置，默认是3秒）
+                            anim: 6, // 抖动
+                        });
                     }
                 })
             }

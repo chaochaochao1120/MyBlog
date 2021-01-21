@@ -67,12 +67,6 @@
                 disabled: false,        // 立即登录按钮
             }
         },
-        methods: {
-
-        },
-        created() {
-
-        }
     }
 </script>
 

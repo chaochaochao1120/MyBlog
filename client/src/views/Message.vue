@@ -19,6 +19,9 @@
             Nav,
             message,
             history
+        },
+        created() {
+            document.documentElement.scrollTop = 0;
         }
     }
 </script>

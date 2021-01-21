@@ -1,9 +1,7 @@
 <template>
     <div class="richText">
         <textarea id="demo" style="display: none;"></textarea>
-        <div class="btn">
-            <button type="button" class="layui-btn" @click="submit">提交留言</button>
-        </div>
+        <button type="button" class="layui-btn" @click="submit">提交留言</button>
     </div>
 </template>
 
@@ -34,12 +32,7 @@
 </script>
 
 <style scoped lang="less">
-    .richText{
-
-        .btn{
-            text-align: center;
-            width: 100%;
-            margin-top: 20px;
-        }
+    .layui-btn{
+        margin-top: 15px;
     }
 </style>

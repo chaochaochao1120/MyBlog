@@ -95,10 +95,6 @@
                                         this.Api.login(this.form).then(res => {
                                             // console.log("登录", res.data);
                                             if (res.data.code === 0) {
-                                                this.$message({
-                                                    message: '登录成功',
-                                                    type: 'success'
-                                                });
                                                 done();
                                                 this.$refs["form"].resetFields();
                                                 setTimeout(() => {
