@@ -191,7 +191,7 @@
                     this.LoginIn = true;
                     this.loginOut = false;
                     this.loginInfo.userName = res.data.data.userName;
-                    this.loginInfo.photo = "http://localhost:3000" + res.data.data.photo
+                    this.loginInfo.photo = res.data.data.photo
                 } else {
                     this.LoginIn = false;
                     this.loginOut = true;

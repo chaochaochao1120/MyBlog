@@ -1,7 +1,7 @@
 <template>
     <div class="history">
         <ul class="message-list">
-            <li class="message-item" v-for="item in comment">
+            <li class="message-item" v-for="(item,index) in message" :key="item._id">
                 <!--父评论-->
                 <div class="p-comment">
                     <img class="p-photo" :src="item.user.photo" alt="">
@@ -11,12 +11,14 @@
                     <div class="comment-content" v-html="item.content"></div>
                     <div class="p-date">
                         <div class="date">{{item.date | getTime}}</div>
-                        <a href="javascript:;" class="reply">回复</a>
+                        <a href="javascript:;" class="reply" @click="replyComment(index)">
+                            {{item.reply.lastIndexArr[0] === index && item.reply.lastIndexArr[1] === undefined ? "收起" : "回复"}}
+                        </a>
                     </div>
                 </div>
                 <hr v-if="item.children.length > 0">
                 <!--子评论-->
-                <div class="c-comment" v-for="it in item.children">
+                <div class="c-comment" v-for="(it, ind) in item.children" :key="it.date + Math.random()">
                     <img class="c-photo" :src="it.user.photo" alt="">
                     <div class="c-info">
                         <span class="userName">{{it.user.userName}}</span>
@@ -26,8 +28,14 @@
                     <div class="comment-content" v-html="it.content"></div>
                     <div class="c-date">
                         <div class="date">{{it.date | getTime}}</div>
-                        <a href="javascript:;" class="reply">回复</a>
+                        <a href="javascript:;" class="reply" @click="replyComment(index, ind)">
+                            {{item.reply.lastIndexArr[0] === index && item.reply.lastIndexArr[1] === ind ? "收起" : "回复"}}
+                        </a>
                     </div>
+                </div>
+                <div :class="['comment-reply', {'show': item.reply.ifshow}]">
+                    <el-input type="textarea" :rows="3" placeholder="请输入内容" v-model="item.reply.content" :placeholder="'回复' + '【' + item.reply.parentUserName + '】'"></el-input>
+                    <button type="button" class="layui-btn layui-btn-xs">提交</button>
                 </div>
             </li>
         </ul>
@@ -62,97 +70,111 @@
                 return `${YY}/${MM}/${DD} ${hh}:${mm}:${ss}`
             }
         },
+        props: {
+            ifLoading: false,   // 是否显示loading图
+            ifNoMore: false,    // 是否显示没有了
+        },
         data(){
             return {
-                comment: [
-                    {
-                        _id: "XXX",
-                        user: {
-                            _id: "xxx",
-                            userName: "张三",
-                            photo: "http://localhost:3000/img/defaultAvatar.jpg",
-                        },
-                        content: "<p>君不见黄河之水天上来，奔流到海不复回。<img src=\"http://localhost:8080/layui/images/face/2.gif\" alt=\"[哈哈]\"></p><p>君不见高堂明镜悲白发，朝如青丝暮成雪。<img src=\"http://localhost:8080/layui/images/face/2.gif\" alt=\"[哈哈]\"></p>",
-                        date: new Date() + "",
-                        // 子评论
-                        children: [
-                            {
-                                parentUserName: "张三",
-                                user: {
-                                    _id: "xxx",
-                                    userName: "李四",
-                                    photo: "http://localhost:3000/img/defaultAvatar.jpg",
-                                },
-                                content: "<p>人生得意须尽欢，莫使金樽空对月。</p>",
-                                date: new Date() + "",
-                            },
-                            {
-                                parentUserName: "张三",
-                                user: {
-                                    _id: "xxx",
-                                    userName: "王五",
-                                    photo: "http://localhost:3000/img/defaultAvatar.jpg",
-                                },
-                                content: "<p>天生我材必有用，千金散尽还复来。</p>",
-                                date: new Date() + "",
-                            },
-                        ]
-                    },
-                    {
-                        _id: "XXX",
-                        user: {
-                            _id: "xxx",
-                            userName: "张三1",
-                            photo: "http://localhost:3000/img/defaultAvatar.jpg",
-                        },
-                        content: "<p>烹羊宰牛且为乐，会须一饮三百杯。</p>",
-                        date: new Date() + "",
-                        // 子评论
-                        children: [
-                            {
-                                parentUserName: "张三1",
-                                user: {
-                                    _id: "xxx",
-                                    userName: "李四1",
-                                    photo: "http://localhost:3000/img/defaultAvatar.jpg",
-                                },
-                                content: "<p>岑夫子，丹丘生，将进酒，杯莫停。</p>",
-                                date: new Date() + "",
-                            },
-                            {
-                                parentUserName: "张三1",
-                                user: {
-                                    _id: "xxx",
-                                    userName: "王五1",
-                                    photo: "http://localhost:3000/img/defaultAvatar.jpg",
-                                },
-                                content: "<p>与君歌一曲，请君为我倾耳听。</p>",
-                                date: new Date() + "",
-                            },
-                        ]
-                    },
-                    {
-                        _id: "XXX",
-                        user: {
-                            _id: "xxx",
-                            userName: "张三",
-                            photo: "http://localhost:3000/img/defaultAvatar.jpg",
-                        },
-                        content: "<p>君不见黄河之水天上来，奔流到海不复回。</p><p>君不见高堂明镜悲白发，朝如青丝暮成雪。</p>",
-                        date: new Date() + "",
-                        // 子评论
-                        children: []
-                    }
-                ]
+                // 留言数据
+                message: [],
             }
         },
+        methods: {
+            // 留言
+            replyComment(pIndex, cIndex){
+                let parentData = this.message[pIndex];
+
+                if(cIndex === undefined){
+                    this.message[pIndex].reply.parentUserName = this.message[pIndex].user.userName;
+                }else{
+                    this.message[pIndex].reply.parentUserName = this.message[pIndex].children[cIndex].user.userName;
+                }
+
+                // 判断回复框是否打开
+                if(pIndex === parentData.reply.lastIndexArr[0] && cIndex === parentData.reply.lastIndexArr[1]){
+                    parentData.reply.lastIndexArr = [];
+                    parentData.reply.ifshow = false;
+                }else{
+                    parentData.reply.lastIndexArr = [pIndex, cIndex];
+                    parentData.reply.ifshow = true;
+                }
+            },
+            // 获取留言列表
+            getMessageList(){
+                this.$emit("fun", false);
+                this.$emit("fun1", false);
+                this.Api.getMessageList(true).then(res => {
+                    // console.log("获取留言列表", res.data.data);
+                    let data = res.data.data;
+                    this.message = data.map(item => {
+                        item.reply =  {
+                            userName: "",
+                            content: "",
+                            parentUserName: "",
+                            date: "",
+                            ifshow: false,
+                            lastIndexArr: [],
+                        }
+                        return item;
+                    })
+                })
+            },
+            // 滚动高+可视区高>=文档高-200时，继续请求文章列表
+            handleScroll(){
+                if (this.ifNoMore || this.ifLoading) {return;}
+                // 文档高
+                let c = document.documentElement.offsetHeight;
+                // 滚动高
+                let a = document.documentElement.scrollTop;
+                // 可视区高
+                let b = document.documentElement.clientHeight;
+                if (a + b >= c - 50) {
+                    this.$emit("fun2", true);
+                    this.Api.getMessageList(false).then(res => {
+                        // console.log(res.data.data);
+                        this.$emit("fun3", false);
+                        if (res.data.data.length) {
+                            let data = res.data.data;
+                            let list = [];
+                            list = data.map(item => {
+                                item.reply =  {
+                                    userName: "",
+                                    content: "",
+                                    parentUserName: "",
+                                    date: "",
+                                    ifshow: false,
+                                    lastIndexArr: [],
+                                }
+                                return item;
+                            })
+                            this.message.push(...list);
+                        }else{
+                            this.$emit("fun4", true);
+                        }
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                }else{}
+            },
+        },
+        mounted() {
+            // 实例挂载后获取留言
+            this.getMessageList();
+
+            // 监听滚轮位置
+            window.addEventListener("scroll", this.handleScroll);
+        },
+        // 销毁滚动事件
+        destroyed() {
+            window.removeEventListener('scroll', this.handleScroll)
+        }
     }
 </script>
 
 <style scoped lang="less">
     .history {
         width: 100%;
-        background-color: #fff;
 
         .message-list{
             li:nth-child(1){
@@ -160,10 +182,19 @@
             }
 
             .message-item{
+                background-color: #fff;
                 width: 100%;
                 border-top: 1px dotted grey;
                 padding: 20px 15px;
+                position: relative;
                 box-sizing: border-box;
+                animation: show 0.8s 1;
+                animation-fill-mode: forwards;
+
+                @keyframes show{
+                    from{opacity: 0.5; transform: scale(0.5)}
+                    to{opacity: 1; transform: scale(1)}
+                }
 
                 /*父评论*/
                 .p-comment{
@@ -271,6 +302,28 @@
                             text-decoration: none;
                             border: none;
                             color: #009688;
+                        }
+                    }
+                }
+
+                /*回复*/
+                .comment-reply{
+                    margin-left: 56px;
+                    height: 0;
+                    overflow: hidden;
+                    transition: height .3s;
+
+                    &.show{
+                        height: 107px;
+                    }
+
+                    .layui-btn-xs{
+                        margin-top: 10px;
+                    }
+
+                    /deep/.el-textarea{
+                        .el-textarea__inner{
+                            resize: none;
                         }
                     }
                 }

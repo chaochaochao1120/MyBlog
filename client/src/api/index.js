@@ -63,5 +63,26 @@ export default {
     // 判断是否登录
     ifLogin(){
         return axios.post("/login/ifLogin")
-    }
+    },
+
+    // ********************************************登录********************************************
+    // 提交留言
+    commitMessage(data){
+        return axios.post("/message/commit", data);
+    },
+
+    // 获取留言列表
+    getMessageList: (function () {
+        let skip = 0;       // 从第几篇文章开始
+        let limit = 5;      // 请求五篇
+        return function (ifFresh = false) {
+            if(ifFresh){
+                skip = 0;
+                limit = 5;
+            }
+            let data = {skip, limit};
+            skip += limit;
+            return axios.post("/message/getMessageList", data)
+        }
+    })(),
 };

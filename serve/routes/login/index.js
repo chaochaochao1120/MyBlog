@@ -61,11 +61,16 @@ router.post("/", (req, res) => {
 
 // 判断是否登录
 router.post("/ifLogin", (req, res) => {
-    // 判断是否已经登录
-    if (req.session.login) {
+    let data = req.session.login;
+    let resData = false;
+    if(data){
+        delete data.password;
+        delete data.__v;
+        resData = data;
+
         res.send({
             code: 0,
-            data: req.session.login,
+            data: resData,
         })
     }else{
         res.send({

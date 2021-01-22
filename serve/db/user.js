@@ -8,9 +8,9 @@ let user = mongoose.model("user", new Schema({
     // 密码
     password: {type: String, required: true},
     // 头像
-    photo: {type: String, default: "/img/defaultPhoto.png"},
+    photo: {type: String, default: "http://localhost:3000/img/defaultPhoto.png"},
     // 注册时间
-    createDate: {type: Number, default: Date.now()},
+    createDate: {type: Number, default: Date.now},
     // 是否权限禁用
     disabled: {type: Boolean, default: false}
 }));

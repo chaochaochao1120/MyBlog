@@ -12,7 +12,7 @@
                     <div class="article">
                         <div class="once" v-for="item in article">
                             <div class="pic">
-                                <div class="img" :style="{backgroundImage:'url(http://localhost:3000'+item.surface+')'}"></div>
+                                <div class="img" :style="{backgroundImage:'url('+item.surface+')'}"></div>
                                 <router-link to="/" class="link">
                                     <i class="el-icon-link"></i>
                                 </router-link>

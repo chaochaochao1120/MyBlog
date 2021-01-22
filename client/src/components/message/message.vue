@@ -22,12 +22,22 @@
                     // console.log("判断是否登录", res.data);
                     if (res.data.code === 0) {
                         if(data){
-                            console.log(data);
-                            layer.msg('留言成功', {
-                                icon: 6,
-                                offset: '300px',
-                                time: 2000 //2秒关闭（如果不配置，默认是3秒）
-                            });
+                            this.Api.commitMessage({
+                                user: res.data.data._id,
+                                content: data
+                            }).then(res => {
+                                // console.log("留言", res);
+                                if(res.data.code === 0){
+                                    setTimeout(() => {
+                                        window.location.reload();
+                                    },500)
+                                    layer.msg('留言成功', {
+                                        icon: 6,
+                                        offset: '300px',
+                                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                                    });
+                                }
+                            })
                         }else{
                             layer.msg('请输入内容！', {
                                 icon: 5,

@@ -56,4 +56,6 @@ app.use('/register', require('./routes/register'));
 // 登录
 app.use('/login', require('./routes/login'));
 
+app.use("/message", require("./routes/message"))
+
 module.exports = app;

@@ -17,7 +17,7 @@
             </div>
             <!-- 内容 -->
             <div class="content">
-                <a href="#" :style="{backgroundImage:'url(http://localhost:3000'+item.surface+')'}"></a>
+                <a href="#" :style="{backgroundImage:'url('+item.surface+')'}"></a>
                 {{item.content}}
             </div>
             <el-divider content-position="left"><a href="" class="read-more">继续阅读</a></el-divider>
@@ -88,9 +88,7 @@
                     }).catch(err => {
                         console.log(err);
                     })
-                }else{
-
-                }
+                }else{}
             },
         },
         computed: {
