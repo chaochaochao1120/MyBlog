@@ -71,6 +71,13 @@ export default {
         return axios.post("/message/commit", data);
     },
 
+
+    // 回复留言
+    // data => {parentId: "id", user: "id", contnet: "", parentUserName: ""}
+    replyMessage(data){
+        return axios.post("/message/replyMessage", data)
+    },
+
     // 获取留言列表
     getMessageList: (function () {
         let skip = 0;       // 从第几篇文章开始

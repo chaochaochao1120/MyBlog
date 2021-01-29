@@ -1,3 +1,4 @@
+// 留言数据库
 const mongoose = require("mongoose");
 
 let Schema = mongoose.Schema;
@@ -19,7 +20,7 @@ let message = mongoose.model("message", new Schema({
             // 子留言回复对象
             parentUserName: {type: String, required: true},
             // 子留言时间
-            date: {type: Date, default: Date.new},
+            date: {type: Date, default: Date.now},
         }
     ]
 }));

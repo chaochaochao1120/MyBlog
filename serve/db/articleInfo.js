@@ -1,3 +1,4 @@
+// 文章展示数据库
 const mongoose = require("mongoose");
 
 let Schema = mongoose.Schema;

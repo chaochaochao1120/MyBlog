@@ -142,14 +142,14 @@
                                             if (res.data.code === 0) {
                                                 // console.log("注册成功");
                                                 this.$message({
-                                                    message: '注册成功',
+                                                    message: '注册成功,请登录！',
                                                     type: 'success'
                                                 });
                                                 done();
                                                 this.$refs["form"].resetFields();
-                                                setTimeout(() => {
+                                                /*setTimeout(() => {
                                                     that.handleLogin();
-                                                }, 0)
+                                                }, 1000)*/
                                             } else {
                                                 this.$message.error(res.data.data);
                                             }

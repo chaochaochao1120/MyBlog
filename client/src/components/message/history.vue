@@ -35,7 +35,7 @@
                 </div>
                 <div :class="['comment-reply', {'show': item.reply.ifshow}]">
                     <el-input type="textarea" :rows="3" placeholder="请输入内容" v-model="item.reply.content" :placeholder="'回复' + '【' + item.reply.parentUserName + '】'"></el-input>
-                    <button type="button" class="layui-btn layui-btn-xs">提交</button>
+                    <button type="button" class="layui-btn layui-btn-xs" @click="submit(index)">提交</button>
                 </div>
             </li>
         </ul>
@@ -81,7 +81,7 @@
             }
         },
         methods: {
-            // 留言
+            // 打开回复框
             replyComment(pIndex, cIndex){
                 let parentData = this.message[pIndex];
 
@@ -157,6 +157,54 @@
                     })
                 }else{}
             },
+            // 回复
+            submit(pIndex){
+                this.Api.ifLogin().then(res => {
+                    // console.log("判断是否登录", res.data);
+                    if (res.data.code === 0) {
+                        if(this.message[pIndex].reply.content){
+                            console.log({
+                                parentId: this.message[pIndex]._id,
+                                user: res.data.data._id,
+                                content: this.message[pIndex].reply.content,
+                                parentUserName: this.message[pIndex].reply.parentUserName
+                            })
+                            this.Api.replyMessage({
+                                parentId: this.message[pIndex]._id,
+                                user: res.data.data._id,
+                                content: this.message[pIndex].reply.content,
+                                parentUserName: this.message[pIndex].reply.parentUserName
+                            }).then(res => {
+                                console.log("回复留言", res);
+                                if(res.data.code === 0){
+                                    setTimeout(() => {
+                                        window.location.reload();
+                                    },500)
+                                    layer.msg('回复成功', {
+                                        icon: 6,
+                                        offset: '300px',
+                                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                                    });
+                                }
+                            })
+                        }else{
+                            layer.msg('请输入内容！', {
+                                icon: 5,
+                                offset: '300px',
+                                time: 2000, //2秒关闭（如果不配置，默认是3秒）
+                                anim: 6, // 抖动
+                            });
+                        }
+                    } else {
+                        layer.msg('请先登录！', {
+                            icon: 5,
+                            offset: '300px',    // top: 300px
+                            time: 2000,     // 2秒关闭（如果不配置，默认是3秒）
+                            anim: 6, // 抖动
+                        });
+                    }
+                })
+            }
         },
         mounted() {
             // 实例挂载后获取留言
@@ -192,7 +240,7 @@
                 animation-fill-mode: forwards;
 
                 @keyframes show{
-                    from{opacity: 0.5; transform: scale(0.5)}
+                    from{opacity: 0.5; transform: scale(0.2)}
                     to{opacity: 1; transform: scale(1)}
                 }
 
@@ -314,7 +362,7 @@
                     transition: height .3s;
 
                     &.show{
-                        height: 107px;
+                        height: 124px;
                     }
 
                     .layui-btn-xs{

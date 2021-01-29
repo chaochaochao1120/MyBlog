@@ -130,7 +130,7 @@
             padding: 20px 25px;
             box-sizing: border-box;
             position: relative;
-            animation: show 0.5s 1;
+            animation: show 1s 1;
             animation-fill-mode: forwards;
 
             @keyframes show{
