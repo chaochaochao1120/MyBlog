@@ -1,19 +1,31 @@
 <template>
     <div class="login">
-        <el-form :model="form" :rules="rules" ref="form" label-width="100px" class="form">
-            <el-form-item label="用户名" prop="userName" label-width="80px">
-                <el-input v-model="form.userName" class="input"></el-input>
-            </el-form-item>
-            <el-form-item label="密码" prop="password" label-width="80px">
-                <el-input v-model="form.password" show-password class="input"></el-input>
-            </el-form-item>
-        </el-form>
+        <el-dialog
+                center
+                :close-on-click-modal="false"
+                :destroy-on-close="true"
+                title="欢迎登录"
+                :visible.sync="dialogVisible"
+                :before-close="handleClose">
+            <el-form :model="form" :rules="rules" ref="form" label-width="100px" class="form">
+                <el-form-item label="用户名" prop="userName" label-width="80px">
+                    <el-input v-model="form.userName" class="input"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" prop="password" label-width="80px">
+                    <el-input v-model="form.password" show-password class="input"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="handleLogin('form')">登 录</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
     export default {
         name: "login",
+        props: ["dialogVisible"],
         data() {
             return {
                 // 注册表单数据
@@ -67,6 +79,37 @@
                 disabled: false,        // 立即登录按钮
             }
         },
+        methods: {
+            // 关闭登录弹窗
+            handleClose(){
+                this.$emit("handleCloseLogin", false);
+            },
+            // 登录
+            handleLogin(form){
+                this.$refs[form].validate((valid) => {
+                    if (valid) {
+                        this.Api.login(this.form).then(res => {
+                            // console.log("登录", res.data);
+                            if (res.data.code === 0) {
+                                this.handleClose();
+                                this.$message({
+                                    message: '登录成功！',
+                                    type: 'success'
+                                });
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 300)
+                            } else {
+                                this.$message.error(res.data.data);
+                                this.handleClose();
+                            }
+                        })
+                    } else {
+                        return false;
+                    }
+                });
+            }
+        }
     }
 </script>
 
@@ -75,7 +118,7 @@
         user-select: none;
 
         .form {
-            padding-right: 0px;
+            padding-right: 0;
 
             .btn {
                 margin-bottom: 0;
@@ -120,5 +163,9 @@
                 }
             }
         }
+    }
+
+    /deep/.el-dialog{
+        width: 420px;
     }
 </style>

@@ -1,27 +1,39 @@
 <template>
     <div class="register">
-        <el-form :model="form" :rules="rules" ref="form" label-width="100px" class="form">
-            <el-form-item label="用户名" prop="userName" label-width="80px">
-                <el-input v-model="form.userName" class="input"></el-input>
-            </el-form-item>
-            <el-form-item label="密码" prop="password" label-width="80px">
-                <el-input v-model="form.password" show-password class="input"></el-input>
-            </el-form-item>
-            <el-form-item label="确认密码" prop="checkPassword" label-width="80px">
-                <el-input v-model="form.checkPassword" show-password class="input"></el-input>
-            </el-form-item>
-            <el-form-item label="验证码" prop="checkCode" label-width="80px">
-                <el-input v-model="form.checkCode" class="checkCode"></el-input>
-                <div class="svg" v-html="svgCode"></div>
-                <p class="refresh" @click="getCheckCode">看不清，换一张？</p>
-            </el-form-item>
-        </el-form>
+        <el-dialog
+                center
+                :close-on-click-modal="false"
+                :destroy-on-close="true"
+                title="欢迎注册"
+                :visible.sync="dialogVisible"
+                :before-close="handleClose">
+            <el-form :model="form" :rules="rules" ref="form" label-width="100px" class="form">
+                <el-form-item label="用户名" prop="userName" label-width="80px">
+                    <el-input v-model="form.userName" class="input"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" prop="password" label-width="80px">
+                    <el-input v-model="form.password" show-password class="input"></el-input>
+                </el-form-item>
+                <el-form-item label="确认密码" prop="checkPassword" label-width="80px">
+                    <el-input v-model="form.checkPassword" show-password class="input"></el-input>
+                </el-form-item>
+                <el-form-item label="验证码" prop="checkCode" label-width="80px">
+                    <el-input v-model="form.checkCode" class="checkCode"></el-input>
+                    <div class="svg" v-html="svgCode"></div>
+                    <p class="refresh" @click="getCheckCode">看不清，换一张？</p>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="handleRegister('form')">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
     export default {
         name: "register",
+        props: ["dialogVisible"],
         data() {
             return {
                 // 注册表单数据
@@ -139,6 +151,36 @@
                     this.svgCode = res.data.data;
                 })
             },
+            // 关闭注册弹窗
+            handleClose(){
+                this.$emit("handleCloseRegister", false);
+            },
+            // 注册
+            handleRegister(form){
+                this.$refs[form].validate((valid) => {
+                    if (valid) {
+                        this.Api.submitRegister(this.form).then(res => {
+                            this.getCheckCode();
+                            // console.log("注册", res.data);
+                            if (res.data.code === 0) {
+                                // console.log("注册成功");
+                                this.$message({
+                                    message: '注册成功,请登录！',
+                                    type: 'success'
+                                });
+                                this.handleClose();
+                            } else {
+                                this.$message.error(res.data.data);
+                                this.handleClose();
+                            }
+                        }).catch(err => {
+                            this.getCheckCode();
+                        })
+                    } else {
+                        return false;
+                    }
+                });
+            }
         },
         created() {
             // 注册组件加载后，获取验证码
@@ -197,5 +239,8 @@
                 }
             }
         }
+    }
+    /deep/.el-dialog{
+        width: 420px;
     }
 </style>

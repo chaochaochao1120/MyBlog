@@ -2,52 +2,63 @@
     导航栏
 -->
 <template>
-    <div id="nav">
-        <div class="content">
-            <!--logo-->
-            <div class="logo">
-                <span>Mr.lzc</span>
-            </div>
-            <!--登录注册-->
-            <div class="login-reg">
-                <div v-if="LoginIn">
-                    <el-dropdown trigger="click" placement="bottom" @command="handleCommand">
-                        <div class="block">
-                            <img class="user-photo" :src="loginInfo.photo" alt="">
-                        </div>
-                        <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item command="userInfo">个人信息</el-dropdown-item>
-                            <el-dropdown-item command="quit" class="quit">退出</el-dropdown-item>
-                        </el-dropdown-menu>
-                    </el-dropdown>
+    <div>
+        <div id="nav">
+            <div class="content">
+                <!--logo-->
+                <div class="logo">
+                    <span>Mr.lzc</span>
                 </div>
-                <div v-if="loginOut">
-                    <el-button type="primary" size="small" @click="handleLogin">登录</el-button>
-                    <el-button type="success" size="small" @click="handleReg">注册</el-button>
+                <!--登录注册-->
+                <div class="login-reg">
+                    <div v-if="LoginIn">
+                        <el-dropdown trigger="click" placement="bottom" @command="handleCommand">
+                            <div class="block">
+                                <img class="user-photo" :src="loginInfo.photo" alt="">
+                            </div>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item command="userInfo">个人信息</el-dropdown-item>
+                                <el-dropdown-item command="quit" class="quit">退出</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </div>
+                    <div v-if="loginOut">
+                        <el-button type="primary" size="small" @click="ifShowLogin = true">登录</el-button>
+                        <el-button type="success" size="small" @click="isShowRegister = true">注册</el-button>
+                    </div>
                 </div>
-            </div>
-            <!--导航栏-->
-            <div class="nav">
-                <ul :class="'list' + whichActive">
-                    <li>
-                        <router-link to="/">首页</router-link>
-                    </li>
-                    <li>
-                        <router-link to="/blog/0">博客</router-link>
-                    </li>
-                    <li>
-                        <router-link to="/message">留言</router-link>
-                    </li>
-                    <li>
-                        <router-link to="/diary">日记</router-link>
-                    </li>
-                    <!--<li><router-link to="/link">友链</router-link></li>-->
-                    <li>
-                        <router-link to="/about">关于</router-link>
-                    </li>
-                </ul>
+                <!--导航栏-->
+                <div class="nav">
+                    <ul :class="'list' + whichActive">
+                        <li>
+                            <router-link to="/">首页</router-link>
+                        </li>
+                        <li>
+                            <router-link to="/blog/0">博客</router-link>
+                        </li>
+                        <li>
+                            <router-link to="/message">留言</router-link>
+                        </li>
+                        <li>
+                            <router-link to="/diary">日记</router-link>
+                        </li>
+                        <!--<li><router-link to="/link">友链</router-link></li>-->
+                        <li>
+                            <router-link to="/about">关于</router-link>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
+
+        <login
+                :dialogVisible="ifShowLogin"
+                @handleCloseLogin="handleCloseLogin"
+        ></login>
+        <register
+                :dialogVisible="isShowRegister"
+                @handleCloseRegister="handleCloseRegister"
+        ></register>
     </div>
 </template>
 
@@ -65,110 +76,18 @@
             return {
                 // 路由列表
                 routerList: ["Home", "Blog", "Message", "Diary", "About"],
-                alertKey: 0,        // 弹窗的key值
+                // alertKey: 0,        // 弹窗的key值
                 LoginIn: false,     // 是否登录
                 loginOut: false,     // 是否登录
                 loginInfo: {
                     userName: "",
                     photo: "",
-                }
+                },
+                ifShowLogin: false,
+                isShowRegister: false,
             }
         },
         methods: {
-            // 登录窗口
-            handleLogin() {
-                const h = this.$createElement;
-                this.$msgbox({
-                    title: '欢迎登录',
-                    message: h(login, {key: this.alertKey++}),
-                    center: true,
-                    showCancelButton: false,
-                    showConfirmButton: true,
-                    closeOnClickModal: false,
-                    confirmButtonText: "立即登录",
-                    beforeClose: (action, instance, done) => {
-                        if (action === 'confirm') {
-                            (function () {
-                                this.disabled = true;
-                                this.$refs["form"].validate((valid) => {
-                                    if (valid) {
-                                        this.Api.login(this.form).then(res => {
-                                            // console.log("登录", res.data);
-                                            if (res.data.code === 0) {
-                                                done();
-                                                this.$refs["form"].resetFields();
-                                                setTimeout(() => {
-                                                    window.location.reload();
-                                                }, 0)
-                                            } else {
-                                                this.$message.error(res.data.data);
-                                            }
-                                        })
-                                    } else {
-                                        return false;
-                                    }
-                                });
-                            }).call(instance.$children[2]);
-                        } else {
-                            done();
-                        }
-                    }
-                }).then(() => {
-                }).catch(() => {
-                });
-            },
-            // 注册窗口
-            handleReg() {
-                const h = this.$createElement;
-                this.$msgbox({
-                    title: '欢迎注册',
-                    message: h(register),
-                    center: true,
-                    lockScroll: true,
-                    showCancelButton: false,
-                    showConfirmButton: true,
-                    closeOnClickModal: false,
-                    confirmButtonText: "立即注册",
-                    beforeClose: (action, instance, done) => {
-                        if (action === 'confirm') {
-                            let that = this;
-                            (function () {
-                                this.disabled = true;
-                                this.$refs["form"].validate((valid) => {
-                                    if (valid) {
-                                        this.Api.submitRegister(this.form).then(res => {
-                                            this.getCheckCode();
-                                            // console.log("注册", res.data);
-                                            if (res.data.code === 0) {
-                                                // console.log("注册成功");
-                                                this.$message({
-                                                    message: '注册成功,请登录！',
-                                                    type: 'success'
-                                                });
-                                                done();
-                                                this.$refs["form"].resetFields();
-                                                /*setTimeout(() => {
-                                                    that.handleLogin();
-                                                }, 1000)*/
-                                            } else {
-                                                this.$message.error(res.data.data);
-                                            }
-                                        }).catch(err => {
-                                            this.getCheckCode();
-                                        })
-                                    } else {
-                                        return false;
-                                    }
-                                });
-                            }).call(instance.$children[2]);
-                        } else {
-                            done();
-                        }
-                    }
-                }).then(() => {
-                }).catch(() => {
-                });
-            },
             // 点击下拉菜单
             handleCommand(command){
                 if(command === "userInfo"){
@@ -176,6 +95,14 @@
                 }else{
                     console.log(22222);
                 }
+            },
+            // 关闭登录弹窗
+            handleCloseLogin(data){
+                this.ifShowLogin = data;
+            },
+            // 关闭注册弹窗
+            handleCloseRegister(data){
+                this.isShowRegister = data;
             }
         },
         computed: {
