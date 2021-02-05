@@ -5,7 +5,7 @@
             <div class="title">
                 <div class="name">
                     <span>【{{item.type}}】</span>
-                    <router-link to="">{{item.title}}</router-link>
+                    <router-link :to="'/article/' + item._id">{{item.title}}</router-link>
                 </div>
                 <div class="date">
                     <div class="day">{{parseInt(item.date.split("T")[0].split("-")[2])}}</div>
@@ -17,10 +17,12 @@
             </div>
             <!-- 内容 -->
             <div class="content">
-                <a href="#" :style="{backgroundImage:'url('+item.surface+')'}"></a>
+                <router-link :to="'/article/' + item._id" :style="{backgroundImage:'url('+item.surface+')'}"></router-link>
                 {{item.content}}
             </div>
-            <el-divider content-position="left"><a href="" class="read-more">继续阅读</a></el-divider>
+            <el-divider content-position="left">
+                <router-link :to="'/article/' + item._id" class="read-more">继续阅读</router-link>
+            </el-divider>
             <!-- 标签and继续阅读 -->
             <div class="footer">
                 <div class="tag">

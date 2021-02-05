@@ -24,7 +24,7 @@
             <ul>
                 <li v-for="(item, index) in articleHot" :key="item._id">
                     <i>{{index + 1}}</i>
-                    <a :href="item._id">{{item.title}}</a>
+                    <router-link :to="'/article/' + item._id">{{item.title}}</router-link>
                 </li>
             </ul>
         </div>
@@ -34,7 +34,7 @@
             <ul>
                 <li v-if="!!getArticleRecommend.title">
                     <i>{{1}}</i>
-                    <a :href="getArticleRecommend._id">{{getArticleRecommend.title}}</a>
+                    <router-link :to="'/article/' + getArticleRecommend._id">{{getArticleRecommend.title}}</router-link>
                 </li>
             </ul>
         </div>

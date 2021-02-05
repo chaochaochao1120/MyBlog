@@ -55,6 +55,7 @@
                 :dialogVisible="ifShowLogin"
                 @handleCloseLogin="handleCloseLogin"
         ></login>
+
         <register
                 :dialogVisible="isShowRegister"
                 @handleCloseRegister="handleCloseRegister"
@@ -76,7 +77,6 @@
             return {
                 // 路由列表
                 routerList: ["Home", "Blog", "Message", "Diary", "About"],
-                // alertKey: 0,        // 弹窗的key值
                 LoginIn: false,     // 是否登录
                 loginOut: false,     // 是否登录
                 loginInfo: {
